@@ -1,0 +1,25 @@
+{
+  "name": "exchange-monitor",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run ./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@types/redis": "^4.0.11",
+    "@types/ws": "^8.18.1",
+    "db": "workspace:*",
+    "logger": "workspace:*",
+    "types": "workspace:*",
+    "redis": "^5.12.1",
+    "ws": "^8.20.1",
+    "zod": "^4.4.3"
+  }
+}
