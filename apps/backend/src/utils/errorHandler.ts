@@ -20,6 +20,8 @@ export function globalErrorHandler(
     });
   } else if (err instanceof Error) {
     logger.error("An unknown error has occured");
+    logger.error(err.name);
+    logger.error(err.message);
     logger.trace(err);
     res.status(500).json({
       success: false,
