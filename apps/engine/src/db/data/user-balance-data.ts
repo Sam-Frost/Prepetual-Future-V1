@@ -1,4 +1,4 @@
-export class UserBalance {
+export class UserBalanceData {
   collateral: number;
   balance: number;
   userId: number;

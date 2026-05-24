@@ -58,3 +58,10 @@ enum PositionStatus {
   OPEN
   CLOSED
 }
+
+enum OrderStatus {
+  OPEN
+  CANCELLED
+  PARTIALLY_FILLED
+  FILLED
+}

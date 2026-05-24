@@ -13,6 +13,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "db": "workspace:*",
     "logger": "workspace:*",
     "types": "workspace:*",
     "@types/redis": "^4.0.11",

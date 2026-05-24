@@ -1,4 +1,4 @@
-export class Position {
+export class PositionData {
   market: string;
   type: string;
   quantity: any;

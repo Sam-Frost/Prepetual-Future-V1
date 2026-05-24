@@ -1,13 +1,18 @@
-import { OrderBook } from "./orderbook";
-import { UserBalance } from "./userbalance";
-import { Position } from "./postitions";
+/*
 
-const userBalance: UserBalance[] = [];
-const orderBook: OrderBook[] = [];
-const position: Position[] = [];
+Optimization for the in-memory db will be picked up later, rn implement in the fastest way to code
 
-export const InMemoryDb = {
-  userBalance: userBalance,
-  orderbook: orderBook,
-  position: position,
-};
+*/
+
+import { OrderBook } from "./order-book";
+import { Position } from "./position";
+import { UserBalance } from "./user-balance";
+
+class InMemoryDb {
+  userBalance = new UserBalance();
+  orderBook = new OrderBook();
+  position = new Position();
+  constructor() {}
+}
+
+export const inMemoryDb = new InMemoryDb();

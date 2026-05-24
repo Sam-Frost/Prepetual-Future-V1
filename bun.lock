@@ -37,6 +37,7 @@
       "name": "engine",
       "dependencies": {
         "@types/redis": "^4.0.11",
+        "db": "workspace:*",
         "logger": "workspace:*",
         "redis": "^5.12.1",
         "types": "workspace:*",

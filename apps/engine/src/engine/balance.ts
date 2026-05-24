@@ -1,28 +1,16 @@
 import type { AddBalance, RegisterUser } from "types";
-import { InMemoryDb } from "../db/db";
-import { UserBalance } from "../db/userbalance";
 import { sendAddBalanceAck, sendRegisterUserAck } from "../redis/sendToBackend";
-import { logger } from "../util/logger";
+import { inMemoryDb } from "../db/db";
 
 export async function createUserBalance(data: RegisterUser) {
-  InMemoryDb.userBalance.push(new UserBalance(data.userId));
-
-  console.log(data);
-  console.log(typeof data);
+  inMemoryDb.userBalance.createUserBalance(data.userId);
   await sendRegisterUserAck(data.correlationId, data.userId);
 }
 
 export async function addUserBalance(data: AddBalance) {
-  for (const user of InMemoryDb.userBalance) {
-    if (user.userId === data.userId) {
-      logger.info(
-        `Updating balance by ${data.amount} for user id ${data.userId}`,
-      );
-      logger.info;
-      user.balance += data.amount;
-      await sendAddBalanceAck(data.correlationId, data.userId, user.balance);
-      return;
-    }
-  }
-  logger.info(`Unable to add balance for user id ${data.userId}`);
+  const updatedBalance = inMemoryDb.userBalance.increaseUserBalance(
+    data.userId,
+    data.amount,
+  );
+  await sendAddBalanceAck(data.correlationId, data.userId, updatedBalance);
 }

@@ -1,4 +1,4 @@
-export class OrderBook {
+export class OrderBookData {
   orderId: number;
   status: string;
   price: number;
