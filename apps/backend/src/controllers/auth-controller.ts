@@ -26,7 +26,7 @@ export async function signup(
   const encryptedPassword = await bcrypt.hash(password, 10);
 
   try {
-    const savedUser = await prisma.users.create({
+    const savedUser = await prisma.user.create({
       data: {
         username: username,
         password: encryptedPassword,
@@ -70,7 +70,7 @@ export async function signin(
   const { username, password } = parsedParams.data;
 
   try {
-    const user = await prisma.users.findUniqueOrThrow({
+    const user = await prisma.user.findUniqueOrThrow({
       where: {
         username,
       },

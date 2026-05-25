@@ -1,6 +1,12 @@
-import type { OrderBookData } from "./data/order-book-data";
+/*
+ Order book requires a better implementation
+*/
+
+import type { Ask } from "./data/ask";
+import type { Bid } from "./data/bid";
 
 export class OrderBook {
-  private data: OrderBookData[] = [];
+  bid: Bid[] = [];
+  ask: Ask[] = [];
   constructor() {}
 }

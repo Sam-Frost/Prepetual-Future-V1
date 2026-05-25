@@ -1,11 +1,11 @@
 export class UserBalanceData {
-  collateral: number;
-  balance: number;
+  collateral: string;
+  balance: string;
   userId: number;
 
   constructor(userId: number) {
     this.userId = userId;
-    this.balance = 0;
-    this.collateral = 0;
+    this.balance = "0";
+    this.collateral = "0";
   }
 }

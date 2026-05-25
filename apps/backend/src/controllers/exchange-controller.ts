@@ -44,7 +44,7 @@ export async function getAvailableEquity(
 ): Promise<void> {
   const userId = Number(req.userId);
 
-  const userBalance = await prisma.users.findUniqueOrThrow({
+  const userBalance = await prisma.user.findUniqueOrThrow({
     where: {
       id: userId,
     },

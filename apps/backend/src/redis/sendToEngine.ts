@@ -1,8 +1,10 @@
 import {
   ADD_BALANCE,
+  NEW_ORDER,
   REGISTER_USER,
   backendToStreamRecord,
   type AddBalance,
+  type CreateOrder,
   type RegisterUser,
   type StreamEvent,
 } from "types";
@@ -10,10 +12,12 @@ import { streamWriter } from "./redis";
 import { env } from "../utils/env";
 import { pendingRequest } from "./loopback";
 import { TimeoutError } from "../errors/TimeoutError";
+import { logger } from "../utils/logger";
+import type { Order } from "db";
 
 async function createPendingRequest(correlationId: string): Promise<any> {
   console.log("Creating pending request");
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<unknown>((resolve, reject) => {
     const timeout = setTimeout(() => {
       delete pendingRequest[correlationId];
       reject(new TimeoutError("Engine response timed out."));
@@ -30,7 +34,7 @@ async function createPendingRequest(correlationId: string): Promise<any> {
   });
 }
 
-export async function addFundToUserBalance(userId: number, amount: number) {
+export async function addFundToUserBalance(userId: number, amount: string) {
   const event: StreamEvent<AddBalance> = {
     type: ADD_BALANCE,
     data: {
@@ -70,5 +74,28 @@ export async function registerUserInEngine(userId: number) {
     backendToStreamRecord(event),
   );
 
+  return promise;
+}
+
+export async function sendOrderToEngine(order: Order) {
+  const event: StreamEvent<CreateOrder> = {
+    type: NEW_ORDER,
+    data: {
+      correlationId: crypto.randomUUID(),
+      orderId: order.id,
+      ...order,
+    },
+  };
+  logger.info(
+    `Sending create order with correlation id ${event.data.correlationId} to engine`,
+  );
+
+  const promise = createPendingRequest(event.data.correlationId);
+
+  await streamWriter.XADD(
+    env.redisWriterStream,
+    "*",
+    backendToStreamRecord(event),
+  );
   return promise;
 }

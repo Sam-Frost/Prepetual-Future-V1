@@ -114,6 +114,9 @@
     },
     "packages/types": {
       "name": "types",
+      "dependencies": {
+        "db": "workspace:*",
+      },
       "devDependencies": {
         "@types/bun": "latest",
       },

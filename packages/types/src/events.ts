@@ -1,3 +1,5 @@
+import type { OrderStatus, OrderType, TradeType } from "db";
+
 export type StreamEvent<T> = {
   type: string;
   data: T;
@@ -22,18 +24,34 @@ export type RegisterUserResponse = {
 export type AddBalance = {
   correlationId: string;
   userId: number;
-  amount: number;
+  amount: string;
 };
 
 export type AddBalanceResponse = {
   correlationId: string;
   userId: number;
-  totalBalance: number;
+  totalBalance: string;
 };
 
 export type MarketPriceUpdate = {
   symbol: string;
   marketPrice: string;
+};
+
+export type CreateOrder = {
+  correlationId: string;
+  orderId: number;
+  userId: number;
+  margin: string;
+  quantity: string;
+  price: string;
+  totalValue: string;
+  tradeType: TradeType;
+  orderStatus: OrderStatus;
+  orderType: OrderType;
+  isPostOnly: boolean;
+  isReduceOnly: boolean;
+  isIoc: boolean;
 };
 
 export function backendToStreamRecord<T>(event: StreamEvent<T>) {

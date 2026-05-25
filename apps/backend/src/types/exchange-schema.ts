@@ -1,7 +1,8 @@
 import { z } from "zod";
+import { positiveNumericString } from "./common-zod";
 
 export const onrampSchema = z.object({
-  amount: z.number().min(0, "Amount cannot be negative"),
+  amount: positiveNumericString,
 });
 
 export const getPositionSchema = z.object({

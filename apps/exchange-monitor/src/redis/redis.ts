@@ -33,11 +33,11 @@ export async function sendToRedis(data: unknown) {
     },
   };
 
-  await streamWriter.XADD(
-    env.redisWriteStream,
-    "*",
-    backendToStreamRecord<MarketPriceUpdate>(event),
-  );
+  // await streamWriter.XADD(
+  //   env.redisWriteStream,
+  //   "*",
+  //   backendToStreamRecord<MarketPriceUpdate>(event),
+  // );
 }
 
 export async function connectRedis() {

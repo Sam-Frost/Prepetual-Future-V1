@@ -6,6 +6,9 @@
   "export": {
     "./": "./index.ts"
   },
+  "dependencies": {
+    "db": "workspace:*"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },

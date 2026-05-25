@@ -1,3 +1,9 @@
+/*
+
+Handle validation error and send them to user with specific fields and their issues
+
+*/
+
 import type { NextFunction, Request, Response } from "express";
 import { logger } from "./logger";
 import { TimeoutError } from "../errors/TimeoutError";

@@ -12,12 +12,13 @@ datasource db {
   provider = "postgresql"
 }
 
-model Users {
+model User {
   id Int @id @default(autoincrement())
   username String @unique
   password String 
-  availableBalance Float @default(0)
-  lockedBalance Float @default(0)
+  availableBalance String @default("0")
+  lockedBalance String @default("0")
+  orders Order[]
 }
 
 model Position {
@@ -27,15 +28,15 @@ model Position {
   status PositionStatus
 }
 
-model Fills {
+model Fill {
   id Int @id @default(autoincrement())
   maker Int 
   taker Int
   market String
-  quantity Int
-  price Int
-  long Int
-  short Int
+  quantity String
+  price String
+  long String
+  short String
 }
 
 model Market{
@@ -45,19 +46,35 @@ model Market{
 }
 
 model Order {
-  id Int @id @default(autoincrement())
-  userId Int 
+    id Int @id @default(autoincrement())
+    userId Int 
+    margin String 
+    quantity String 
+    price String 
+    totalValue String 
+    tradeType TradeType 
+    orderStatus OrderStatus @default(OPEN)
+    orderType OrderType 
+    isPostOnly Boolean 
+    isReduceOnly Boolean 
+    isIoc Boolean 
+    user User @relation(fields: [userId], references: [id])
 }
 
-enum TradeType {
-  SHORT
-  LONG
-}
+  enum TradeType {
+    SHORT
+    LONG
+  }
 
-enum PositionStatus {
-  OPEN
-  CLOSED
-}
+  enum PositionStatus {
+    OPEN
+    CLOSED
+  }
+
+  enum OrderType {
+    MARKET
+    LIMIT
+  }
 
 enum OrderStatus {
   OPEN

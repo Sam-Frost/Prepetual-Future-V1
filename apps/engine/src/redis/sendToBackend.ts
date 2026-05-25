@@ -37,7 +37,7 @@ export async function sendRegisterUserAck(
 export async function sendAddBalanceAck(
   correlationId: string,
   userId: number,
-  totalBalance: number,
+  totalBalance: string,
 ) {
   logger.info(
     `Sending add balace ack to server for correlation id ${correlationId}`,
