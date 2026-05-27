@@ -1,8 +1,12 @@
 import {
   ADD_BALANCE,
   engineToStreamRecord,
+  NEW_ORDER,
   REGISTER_USER,
   type AddBalanceResponse,
+  type CreateOrder,
+  type CreateOrderResponse,
+  type EngineResponse,
   type RegisterUserResponse,
   type StreamEvent,
 } from "types";
@@ -12,9 +16,10 @@ import { logger } from "../util/logger";
 
 export async function sendRegisterUserAck(
   correlationId: string,
-  userId: number,
+  userId: string,
 ) {
-  const event: StreamEvent<RegisterUserResponse> = {
+  const event: EngineResponse<RegisterUserResponse> = {
+    success: true,
     type: REGISTER_USER,
     data: {
       correlationId,
@@ -23,26 +28,19 @@ export async function sendRegisterUserAck(
   };
 
   console.log(`Sending register user ACK ${JSON.stringify(event)}`);
-  try {
-    await streamWriter.XADD(
-      env.redisWriterStream,
-      "*",
-      engineToStreamRecord(true, event),
-    );
-  } catch (e) {
-    console.error("Error occured while trying to send register user event");
-  }
+  sendToRedis(event);
 }
 
 export async function sendAddBalanceAck(
   correlationId: string,
-  userId: number,
+  userId: string,
   totalBalance: string,
 ) {
   logger.info(
     `Sending add balace ack to server for correlation id ${correlationId}`,
   );
-  const event: StreamEvent<AddBalanceResponse> = {
+  const event: EngineResponse<AddBalanceResponse> = {
+    success: true,
     type: ADD_BALANCE,
     data: {
       correlationId,
@@ -50,13 +48,34 @@ export async function sendAddBalanceAck(
       totalBalance,
     },
   };
+  sendToRedis(event);
+}
+
+export async function sendOrderCreatedAck(order: CreateOrder) {
+  logger.info(
+    `Sending create order ACK for correlation id : ${order.correlationId}`,
+  );
+  const event: EngineResponse<CreateOrderResponse> = {
+    success: true,
+    type: NEW_ORDER,
+    data: {
+      correlationId: order.correlationId,
+      orderId: order.orderId,
+    },
+  };
+  await sendToRedis(event);
+}
+
+export async function sendErrorResponse() {}
+
+async function sendToRedis<T>(event: EngineResponse<T>) {
   try {
     await streamWriter.XADD(
       env.redisWriterStream,
       "*",
-      engineToStreamRecord(true, event),
+      engineToStreamRecord(event),
     );
   } catch (e) {
-    logger.error("Error occured while trying to send add balance event");
+    console.error("Error occured while trying to send register user event");
   }
 }

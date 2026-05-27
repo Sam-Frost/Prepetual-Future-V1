@@ -3,6 +3,7 @@ import { numericString } from "./common-zod";
 import { OrderType, TradeType } from "db";
 
 export const createOrderSchema = z.object({
+  marketId: numericString,
   margin: numericString,
   quantity: numericString,
   price: numericString,

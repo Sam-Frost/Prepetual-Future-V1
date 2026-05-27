@@ -1,26 +1,12 @@
+import type { TradeType } from "db";
+
 export class PositionData {
-  market: string;
-  type: string;
-  quantity: any;
-  margin: number;
-  liquidationPrice: number;
-  pnl: number;
-  averagePrice: number;
-  constructor(
-    market: string,
-    type: string,
-    quantity: number,
-    margin: number,
-    liquidationPrice: number,
-    pnl: number,
-    averagePrice: number,
-  ) {
-    this.market = market;
+  type: TradeType;
+  quantity: string;
+  entryPrice: string;
+  constructor(type: TradeType, quantity: string, entryPrice: string) {
     this.type = type;
     this.quantity = quantity;
-    this.margin = margin;
-    this.liquidationPrice = liquidationPrice;
-    this.pnl = pnl;
-    this.averagePrice = averagePrice;
+    this.entryPrice = entryPrice;
   }
 }

@@ -11,4 +11,6 @@ function readRequiredEnv(variable: string): string {
 export const env = {
   redisWriterStream: readRequiredEnv("REDIS_WRITER_STREAM"),
   redisReaderStream: readRequiredEnv("REDIS_READER_STREAM"),
+  snapshotFrequency: Number(readRequiredEnv("SNAPSHOT_FREQUENCY")),
+  env: readRequiredEnv("ENV"),
 };

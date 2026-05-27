@@ -13,9 +13,16 @@ import { addUserBalance, createUserBalance } from "./engine/balance";
 import { logger } from "./util/logger";
 import { cancelOrder, createOrder } from "./engine/order";
 import { EngineError } from "./util/engine-error";
+import { snapshot } from "./backup/snapshot";
+import { init } from "./util/init";
 
 async function engineStart() {
   logger.info("Matching engine has started!");
+  setInterval(() => {
+    // logger.info(`Snapshoting current db state.`);
+    snapshot();
+  }, env.snapshotFrequency);
+
   while (true) {
     const response: any = await streamReader.XREAD(
       [{ key: env.redisReaderStream, id: "$" }],
@@ -44,7 +51,7 @@ async function engineStart() {
       addUserBalance(data);
     } else if (eventType === NEW_ORDER) {
       const data: CreateOrder = JSON.parse(eventData);
-      createOrder(data);
+      await createOrder(data);
     } else if (eventType === CANCEL_ORDER) {
       cancelOrder();
     } else {
@@ -53,4 +60,5 @@ async function engineStart() {
   }
 }
 
+init();
 engineStart();

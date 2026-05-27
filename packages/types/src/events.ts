@@ -5,31 +5,30 @@ export type StreamEvent<T> = {
   data: T;
 };
 
-export type EngineResponse<T> = {
+export type EngineResponse<T> = StreamEvent<T> & {
   success: boolean;
-  data?: T;
   error?: string;
 };
 
 export type RegisterUser = {
   correlationId: string;
-  userId: number;
+  userId: string;
 };
 
 export type RegisterUserResponse = {
   correlationId: string;
-  userId: number;
+  userId: string;
 };
 
 export type AddBalance = {
   correlationId: string;
-  userId: number;
+  userId: string;
   amount: string;
 };
 
 export type AddBalanceResponse = {
   correlationId: string;
-  userId: number;
+  userId: string;
   totalBalance: string;
 };
 
@@ -40,8 +39,9 @@ export type MarketPriceUpdate = {
 
 export type CreateOrder = {
   correlationId: string;
-  orderId: number;
-  userId: number;
+  orderId: string;
+  userId: string;
+  marketId: string;
   margin: string;
   quantity: string;
   price: string;
@@ -54,6 +54,11 @@ export type CreateOrder = {
   isIoc: boolean;
 };
 
+export type CreateOrderResponse = {
+  correlationId: string;
+  orderId: string;
+};
+
 export function backendToStreamRecord<T>(event: StreamEvent<T>) {
   return {
     type: event.type,
@@ -61,16 +66,13 @@ export function backendToStreamRecord<T>(event: StreamEvent<T>) {
   };
 }
 
-export function engineToStreamRecord<T>(
-  success: boolean,
-  event?: StreamEvent<T>,
-  error?: string,
-) {
+export function engineToStreamRecord<T>(event: EngineResponse<T>) {
   return {
-    success: String(success),
-    ...(event && {
-      data: JSON.stringify(event),
+    success: String(event.success),
+    type: event.type,
+    ...(event.data && {
+      data: JSON.stringify(event.data),
     }),
-    ...(error && { error }),
+    ...(event.error && { error: event.error }),
   };
 }

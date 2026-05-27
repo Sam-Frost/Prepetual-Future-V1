@@ -25,7 +25,6 @@ model Position {
   id Int @id @default(autoincrement())
   userId Int
   marketId Int 
-  status PositionStatus
 }
 
 model Fill {
@@ -47,6 +46,7 @@ model Market{
 
 model Order {
     id Int @id @default(autoincrement())
+    marketId String
     userId Int 
     margin String 
     quantity String 
@@ -66,10 +66,6 @@ model Order {
     LONG
   }
 
-  enum PositionStatus {
-    OPEN
-    CLOSED
-  }
 
   enum OrderType {
     MARKET

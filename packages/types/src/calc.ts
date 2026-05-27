@@ -1,6 +1,7 @@
 export const MONEY_SCALE = 2;
+const DEFAULT_SCLAE = 6; // This is hardcoded rn, should be different for each asset
 
-function toScaled(amount: string, scale: number) {
+function toScaled(amount: string, scale: number = DEFAULT_SCLAE) {
   const [wholeNumber, fractional = ""] = amount.split(".");
 
   const decimal = fractional.padEnd(scale, "0").slice(0, scale);
@@ -9,7 +10,7 @@ function toScaled(amount: string, scale: number) {
   return BigInt(combined);
 }
 
-function fromScaled(amount: bigint, scale: number) {
+function fromScaled(amount: bigint, scale: number = DEFAULT_SCLAE) {
   if (scale === 0) return amount.toString();
 
   let isNegative = false;

@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { getPositionSchema, onrampSchema } from "../types/exchange-schema";
 import { addFundToUserBalance } from "../redis/sendToEngine";
-import { prisma, PositionStatus } from "db";
+import { prisma } from "db";
 import { PAGE_SIZE } from "../utils/constants";
 import { ApiResponse } from "../utils/apiResponse";
 import { PaginatedApiResponse } from "../utils/paginatedResponse";
@@ -24,12 +24,18 @@ export async function onRamp(
 
   const { amount } = parsedParams.data;
 
-  const engineResponse = await addFundToUserBalance(userId, amount);
+  const engineResponse = await addFundToUserBalance(userId.toString(), amount);
+  console.log("-----------------------");
   console.log(engineResponse);
-  if (engineResponse.totalBalance) {
-    res.status(200).json({
-      updatedBalance: engineResponse.totalBalance,
-    });
+  if (engineResponse.success) {
+    res.status(200).json(
+      new ApiResponse(
+        {
+          updatedBalance: engineResponse.data.totalBalance,
+        },
+        `Balance added for user ${userId}`,
+      ),
+    );
   }
 
   res.status(500).json({
@@ -52,7 +58,6 @@ export async function getAvailableEquity(
   try {
     res.status(200).json(
       new ApiResponse(
-        true,
         {
           userId,
           availableBalance: userBalance.availableBalance,
@@ -85,7 +90,6 @@ export async function getOpenPositions(
     where: {
       userId: parsedScehma.userId,
       marketId: parsedScehma.marketId,
-      status: PositionStatus.OPEN,
     },
     skip: PAGE_SIZE * parsedScehma.p,
     take: PAGE_SIZE,
@@ -95,7 +99,6 @@ export async function getOpenPositions(
     .status(200)
     .json(
       new ApiResponse(
-        true,
         new PaginatedApiResponse(positions, Number(p), PAGE_SIZE),
         `Users open position for marketId ${marketId}`,
       ),
@@ -121,7 +124,6 @@ export async function getClosedPositions(
     where: {
       userId: parsedScehma.userId,
       marketId: parsedScehma.marketId,
-      status: PositionStatus.CLOSED,
     },
     skip: PAGE_SIZE * parsedScehma.p,
     take: PAGE_SIZE,
@@ -131,7 +133,6 @@ export async function getClosedPositions(
     .status(200)
     .json(
       new ApiResponse(
-        true,
         new PaginatedApiResponse(positions, Number(p), PAGE_SIZE),
         `Users closed position for marketId ${marketId}`,
       ),

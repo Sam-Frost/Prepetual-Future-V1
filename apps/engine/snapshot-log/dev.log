@@ -1,0 +1,1 @@
+{"user":{"data":[{"collateral":"0","balance":"400.42","userId":"1","position":{}}]},"orderBook":{"books":{"1":{"bid":{"65000":[{"userId":"1","orderId":"1","status":"OPEN","margin":"100","quantity":"0.01","bidPrice":"65000","totalValue":"6507777","createdAt":1779864524141,"updatedAt":1779864524141}]},"ask":{}}}},"fill":{"data":[]}}

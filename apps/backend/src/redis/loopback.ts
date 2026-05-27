@@ -1,4 +1,6 @@
+import type { EngineResponse } from "types";
 import { env } from "../utils/env";
+import { logger } from "../utils/logger";
 import { streamReader } from "./redis";
 
 type PedingRequest = {
@@ -22,20 +24,28 @@ async function loopback() {
     if (!response) continue;
 
     const message = response[0].messages[0].message;
-    const success = Boolean(message.success);
-    const data = JSON.parse(message.data);
 
-    const eventType: string = data.type;
-    const eventData = data.data;
-    const eventError: string = message.error;
+    if (!message) {
+      throw new Error("Empty message recived from engine");
+    }
 
-    const correlationId: string = eventData.correlationId;
+    const typedMessage = message as EngineResponse<string>;
+    const success = Boolean(typedMessage.success);
+    const eventType = typedMessage.type;
+    const parsedMessageData = JSON.parse(typedMessage.data);
+
+    const correlationId: string = parsedMessageData.correlationId;
 
     if (pendingRequest[correlationId]) {
+      const responseObj: EngineResponse<unknown> = {
+        success,
+        type: eventType,
+        data: parsedMessageData,
+      };
       if (success) {
-        pendingRequest[correlationId].resolve(eventData);
+        pendingRequest[correlationId].resolve(responseObj);
       } else {
-        pendingRequest[correlationId].reject(eventData);
+        pendingRequest[correlationId].reject(responseObj);
       }
     }
   }

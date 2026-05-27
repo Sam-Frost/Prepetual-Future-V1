@@ -1,8 +1,9 @@
 import type { OrderStatus } from "db";
+import type { CreateOrder } from "types";
 
 export class Ask {
-  userId: Number; // User ID of the users
-  orderId: Number; // Order ID for the order created in the database
+  userId: string; // User ID of the users
+  orderId: string; // Order ID for the order created in the database
   status: OrderStatus;
   margin: string; // Collateral backing the order
   quantity: string; // Number of short positions
@@ -10,22 +11,14 @@ export class Ask {
   totalValue: string; // Total order value
   createdAt: number = Date.now();
   updatedAt: number = Date.now();
-  constructor(
-    userId: Number,
-    orderId: Number,
-    status: OrderStatus,
-    margin: string,
-    quantity: string,
-    askPrice: string,
-    totalValue: string,
-  ) {
-    this.userId = userId;
-    this.orderId = orderId;
-    this.status = status;
-    this.margin = margin;
-    this.quantity = quantity;
-    this.askPrice = askPrice;
-    this.totalValue = totalValue;
+  constructor(order: CreateOrder) {
+    this.userId = order.userId;
+    this.orderId = order.orderId;
+    this.status = order.orderStatus;
+    this.margin = order.margin;
+    this.quantity = order.quantity;
+    this.askPrice = order.price;
+    this.totalValue = order.totalValue;
     this.createdAt = Date.now();
     this.updatedAt = Date.now();
   }

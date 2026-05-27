@@ -33,7 +33,7 @@ export async function signup(
       },
     });
 
-    const engineRes = await registerUserInEngine(savedUser.id);
+    const engineRes = await registerUserInEngine(savedUser.id.toString());
 
     console.log("Engine Response from queue");
     console.log(engineRes);

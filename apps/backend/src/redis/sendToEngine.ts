@@ -34,7 +34,7 @@ async function createPendingRequest(correlationId: string): Promise<any> {
   });
 }
 
-export async function addFundToUserBalance(userId: number, amount: string) {
+export async function addFundToUserBalance(userId: string, amount: string) {
   const event: StreamEvent<AddBalance> = {
     type: ADD_BALANCE,
     data: {
@@ -55,7 +55,7 @@ export async function addFundToUserBalance(userId: number, amount: string) {
   return promise;
 }
 
-export async function registerUserInEngine(userId: number) {
+export async function registerUserInEngine(userId: string) {
   const event: StreamEvent<RegisterUser> = {
     type: REGISTER_USER,
     data: {
@@ -81,9 +81,10 @@ export async function sendOrderToEngine(order: Order) {
   const event: StreamEvent<CreateOrder> = {
     type: NEW_ORDER,
     data: {
-      correlationId: crypto.randomUUID(),
-      orderId: order.id,
       ...order,
+      correlationId: crypto.randomUUID(),
+      orderId: order.id.toString(),
+      userId: order.userId.toString(),
     },
   };
   logger.info(
